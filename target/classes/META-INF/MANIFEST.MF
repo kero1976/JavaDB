@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Built-By: けろ
+Build-Jdk: 11.0.7
+Class-Path: lib/sqlite-jdbc-3.23.1.jar
+Main-Class: jp.seraphyware.example.JavaSqlite3Example
+Created-By: Maven Integration for Eclipse
+

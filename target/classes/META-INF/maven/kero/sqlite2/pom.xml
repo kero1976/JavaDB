@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>kero</groupId>
+  <artifactId>sqlite2</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  	<packaging>jar</packaging>
+
+	<name>JavaSqlite3Example</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<mainClass>jp.seraphyware.example.JavaSqlite3Example</mainClass>
+
+		<!-- exec:javaのデフォルトの引数用 -->
+		<maxThread>20</maxThread>
+		<maxLoop>1000</maxLoop>
+	</properties>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc 公式: https://github.com/xerial/sqlite-jdbc#usage -->
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.23.1</version>
+		</dependency>
+	</dependencies>
+<build>
+	<plugins>
+			<!-- 依存するパッケージをlibフォルダに出力する -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 依存パッケージへのクラスパスとメインクラスのあるMANIFESTをもつJARの作成 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<mainClass>${mainClass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- 実行
+				 mvn package exec:java
+				 で実行可能とする
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>${mainClass}</mainClass>
+					<arguments>
+						<argument>mydb.db</argument>
+						<argument>${maxThread}</argument>
+						<argument>${maxLoop}</argument>
+					</arguments>
+					<systemProperties>
+						<systemProperty>
+							<key>myproperty</key>
+							<value>myvalue</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+			</plugin>
+		</plugins>
+		</build>
+</project>
